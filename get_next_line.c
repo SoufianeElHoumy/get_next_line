@@ -6,7 +6,7 @@
 /*   By: soel-hou <soel-hou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 11:49:01 by soel-hou          #+#    #+#             */
-/*   Updated: 2026/11/17 13:51:32 by soel-hou         ###   ########.fr       */
+/*   Updated: 2026/11/18 13:00:52 by soel-hou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,13 @@ static int	update_reminder_after_line(char **reminder)
 	if (temp == NULL)
 		return (0);
 	free(*reminder);
-	*reminder = temp;
+	if (temp[0] == '\0')
+	{
+		free(temp);
+		*reminder = NULL;
+	}
+	else
+		*reminder = temp;
 	return (1);
 }
 
@@ -92,9 +98,9 @@ char	*get_next_line(int fd)
 	if (buffer == NULL)
 		return (NULL);
 	if (read_to_reminder(fd, &reminder, buffer) == -1)
-		return (free(buffer), NULL);
+		return (free(reminder), reminder = NULL, free(buffer), NULL);
 	if (reminder == NULL || reminder[0] == '\0')
-		return (free(buffer), NULL);
+		return (free(reminder), reminder = NULL, free(buffer), NULL);
 	result = extract_line(reminder);
 	if (result == NULL)
 		return (free(buffer), NULL);
